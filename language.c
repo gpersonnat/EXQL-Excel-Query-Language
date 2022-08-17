@@ -8,6 +8,10 @@
 
 char* remove_quotes(char* string)
 {
+    if (string[0] != '"')
+    {
+        return strdup(string);
+    }
     char copy_string[strlen(string) - 2];
     int d = 0;
     for (int i = 1; i < strlen(string) - 1; i++)
@@ -41,7 +45,7 @@ simple;
 
 typedef enum { SIMPLE, COMPOUND } predicate_type;
 
-typedef struct 
+typedef struct predicate
 {
 
     simple simple_expr;
@@ -62,6 +66,7 @@ typedef struct
 {
     char* sheetname;
     predicate* expr;
+    bool select_all;
 
 } query;
 
@@ -95,20 +100,28 @@ predicate* form_predicate(char* field, relation relation, value value, valuetype
             break;
     }
 
-    return p;
-   
+    return p;   
 }
 
-query* form_query(char* sheetname, predicate* predicate)
+predicate* form_comp_predicate(predicate* p1, predicate* p2, relation op) 
+{
+    predicate* p = malloc(sizeof(predicate));
+    p->type = COMPOUND;
+    p->compound.predicate1 = p1;
+    p->compound.predicate2 = p2;
+    p->compound.operator = op;
+    return p;
+}
+
+
+query* form_query(char* sheetname, predicate* predicate, bool select_all)
 {
     query* q = malloc(sizeof(query));
     q->sheetname = strdup(sheetname);
     q->expr = predicate;
-
+    q->select_all = select_all;
     return q;
 }
-
-
 
 
 bool satisfy_predicate(predicate* predicate, char* row[], int num_cols, char* header_row[])
@@ -140,7 +153,7 @@ bool satisfy_predicate(predicate* predicate, char* row[], int num_cols, char* he
                
                 if (strcasecmp(fieldname, header_row[i]) == 0)
                 {
-                    if (strcasecmp(row[i], val) == 0) 
+                    if (strcasecmp(remove_quotes(row[i]), val) == 0) 
                     {
                         return true;
                     }
@@ -173,28 +186,55 @@ char* remove_escape(char* string)
     return strdup(new_string);
 }
 
+char* slice(const char *str, size_t start, size_t end)
+{   
+    char result[end - start];
+
+    for (int i = start; i <= end; i++)
+    {
+        result[i - start] = str[i];
+    }
+
+    return strdup(result);
+}
+
 int split_line(char* line, char* row[])
 {
 
-   char* new_line = remove_escape(line);
-
-   char* token = strtok(new_line, ",");
-
    int column = 0;
 
-   while (token != NULL)
+   int start = 0;
+
+   bool within_quote = false;
+
+   for (int i = 0; i < strlen(line); i++)
    {
-     
-        row[column] = strdup(token);
+        if ((line[i] == ',' || line[i] == '\n') && !within_quote)
+        {
         
-        token = strtok(NULL, ",");
+           row[column] = strdup(slice(line, start, i-1));
+           start = i + 1;
+           column++;
 
-        column++;
+        }
+        if (i == 0 && line[i] == '"')
+        {
+            within_quote = true;
+        }
+        if (line[i] == '"' && i > 0 && (line[i - 1] == ',')) 
+        {
+            within_quote = true;
+        }
+
+        if (line[i] == '"' && (line[i + 1] == ',' || line[i + 1] == '\n'))
+        {
+            within_quote = false;
+        }
+
    }
-
    return column;
-
 }
+
 
 
 void evaluate(query* q)
@@ -202,6 +242,7 @@ void evaluate(query* q)
     char sheet[100];
 
     sprintf(sheet, "%s.csv", q->sheetname);
+
 
     FILE* sheet_data = fopen(sheet, "r");
 
@@ -224,11 +265,7 @@ void evaluate(query* q)
         }
     }
 
- 
-
-
     printf("\n");
-
 
 
     while (fgets(buffer, MAX_CHARACTERS_CELL, sheet_data))
@@ -237,12 +274,18 @@ void evaluate(query* q)
 
         split_line(buffer, row);
 
+        
 
-        if (!satisfy_predicate(q->expr, row, num_columns, header_row))
+        if (!q->select_all)
         {
-            continue;
+            
+            if (!satisfy_predicate(q->expr, row, num_columns, header_row))
+            {
+                continue;
+            }
         }
 
+        
         for (int i = 0; i < num_columns; i++) 
         {
             printf("%s", row[i]);
@@ -260,7 +303,6 @@ void evaluate(query* q)
     free(q);
 
     fclose(sheet_data);
-
 }
 
 

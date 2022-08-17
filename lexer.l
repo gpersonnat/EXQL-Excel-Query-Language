@@ -16,11 +16,12 @@ digit [0-9]
 
 
 %%
-"CHOOSE" { return CHOOSE; }
-"SHEET" { return SHEET; }
-"SELECT" { return SELECT; }
-"ALL"   { return ALL; }
-"WHERE" { return WHERE; }
+"choose" { return CHOOSE; }
+"sheet" { return SHEET; }
+"select" { return SELECT; }
+"all"   { return ALL; }
+"where" { return WHERE; }
+"or"    { return OR_OP; }
 {alpha}({alpha}|{digit})* { yylval.strval = strdup(yytext); return WORD; }
 "="    { return EQUAL; }
 "\""   { return QUOTE; }

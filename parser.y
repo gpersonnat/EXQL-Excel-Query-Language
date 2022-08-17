@@ -26,6 +26,7 @@ void yyerror(char* s);
 %token <intval> NUMBER
 %token <strval> WORD
 %token <strval> STR
+%token OR_OP
 %token EQUAL
 %token EOL
 %token CHOOSE
@@ -35,6 +36,7 @@ void yyerror(char* s);
 %token WHERE
 %token QUOTE
 
+%left OR_OP
 
 %type <qval> exp
 
@@ -58,12 +60,15 @@ app: /* nothing */
 predicate:
 | WORD EQUAL NUMBER { value val = {.ival = $3}; $$ = form_predicate(strdup($1), EQUALS, val, INT); }
 | WORD EQUAL STR { value val = {.sval = remove_quotes(strdup($3))}; $$ = form_predicate(strdup($1), EQUALS, val, STRING); }
+| predicate OR_OP predicate {$$ = form_comp_predicate($1, $3, OR)}
+| 
 
 ;
 
 exp:     
 //  | CHOOSE SHEET WORD SELECT ALL  { $$ = strdup($3); }
-  | CHOOSE SHEET WORD SELECT WHERE predicate { $$ = form_query($3, $6); }
+  | CHOOSE SHEET WORD SELECT WHERE predicate { $$ = form_query($3, $6, false); }
+  | CHOOSE SHEET WORD SELECT ALL             {$$ = form_query($3, NULL, true); }
 
  ;
 

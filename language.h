@@ -23,7 +23,7 @@ simple;
 
 typedef enum { SIMPLE, COMPOUND } predicate_type;
 
-typedef struct 
+typedef struct predicate
 {
 
     simple simple_expr;
@@ -55,7 +55,9 @@ typedef union
 
 predicate* form_predicate(char* field, relation relation, value value, valuetype type);
 
-query* form_query(char* sheetname, predicate* predicate);
+predicate* form_comp_predicate(predicate* p1, predicate* p2, relation op);
+
+query* form_query(char* sheetname, predicate* predicate, bool select_all);
 
 
 bool satisfy_predicate(predicate* predicate, char* row[], int num_cols, char* header_row[]);

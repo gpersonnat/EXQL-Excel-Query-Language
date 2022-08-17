@@ -42,28 +42,30 @@
      NUMBER = 258,
      WORD = 259,
      STR = 260,
-     EQUAL = 261,
-     EOL = 262,
-     CHOOSE = 263,
-     SHEET = 264,
-     SELECT = 265,
-     ALL = 266,
-     WHERE = 267,
-     QUOTE = 268
+     OR_OP = 261,
+     EQUAL = 262,
+     EOL = 263,
+     CHOOSE = 264,
+     SHEET = 265,
+     SELECT = 266,
+     ALL = 267,
+     WHERE = 268,
+     QUOTE = 269
    };
 #endif
 /* Tokens.  */
 #define NUMBER 258
 #define WORD 259
 #define STR 260
-#define EQUAL 261
-#define EOL 262
-#define CHOOSE 263
-#define SHEET 264
-#define SELECT 265
-#define ALL 266
-#define WHERE 267
-#define QUOTE 268
+#define OR_OP 261
+#define EQUAL 262
+#define EOL 263
+#define CHOOSE 264
+#define SHEET 265
+#define SELECT 266
+#define ALL 267
+#define WHERE 268
+#define QUOTE 269
 
 
 
@@ -80,7 +82,7 @@ typedef union YYSTYPE
  query* qval;
 }
 /* Line 1529 of yacc.c.  */
-#line 84 "parser.tab.h"
+#line 86 "parser.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

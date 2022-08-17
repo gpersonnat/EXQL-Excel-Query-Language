@@ -69,28 +69,30 @@
      NUMBER = 258,
      WORD = 259,
      STR = 260,
-     EQUAL = 261,
-     EOL = 262,
-     CHOOSE = 263,
-     SHEET = 264,
-     SELECT = 265,
-     ALL = 266,
-     WHERE = 267,
-     QUOTE = 268
+     OR_OP = 261,
+     EQUAL = 262,
+     EOL = 263,
+     CHOOSE = 264,
+     SHEET = 265,
+     SELECT = 266,
+     ALL = 267,
+     WHERE = 268,
+     QUOTE = 269
    };
 #endif
 /* Tokens.  */
 #define NUMBER 258
 #define WORD 259
 #define STR 260
-#define EQUAL 261
-#define EOL 262
-#define CHOOSE 263
-#define SHEET 264
-#define SELECT 265
-#define ALL 266
-#define WHERE 267
-#define QUOTE 268
+#define OR_OP 261
+#define EQUAL 262
+#define EOL 263
+#define CHOOSE 264
+#define SHEET 265
+#define SELECT 266
+#define ALL 267
+#define WHERE 268
+#define QUOTE 269
 
 
 
@@ -140,7 +142,7 @@ typedef union YYSTYPE
  query* qval;
 }
 /* Line 193 of yacc.c.  */
-#line 144 "parser.tab.c"
+#line 146 "parser.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -153,7 +155,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 157 "parser.tab.c"
+#line 159 "parser.tab.c"
 
 #ifdef short
 # undef short
@@ -368,20 +370,20 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  3
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   15
+#define YYLAST   18
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  14
+#define YYNTOKENS  15
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  4
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  10
+#define YYNRULES  13
 /* YYNRULES -- Number of states.  */
-#define YYNSTATES  18
+#define YYNSTATES  21
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   268
+#define YYMAXUTOK   269
 
 #define YYTRANSLATE(YYX)						\
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -415,7 +417,7 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9,    10,    11,    12,    13
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14
 };
 
 #if YYDEBUG
@@ -424,23 +426,24 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint8 yyprhs[] =
 {
        0,     0,     3,     4,     8,    12,    14,    15,    19,    23,
-      24
+      27,    28,    29,    36
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
 static const yytype_int8 yyrhs[] =
 {
-      15,     0,    -1,    -1,    15,    17,     7,    -1,    15,     1,
-       7,    -1,     7,    -1,    -1,     4,     6,     3,    -1,     4,
-       6,     5,    -1,    -1,     8,     9,     4,    10,    12,    16,
-      -1
+      16,     0,    -1,    -1,    16,    18,     8,    -1,    16,     1,
+       8,    -1,     8,    -1,    -1,     4,     7,     3,    -1,     4,
+       7,     5,    -1,    17,     6,    17,    -1,    -1,    -1,     9,
+      10,     4,    11,    13,    17,    -1,     9,    10,     4,    11,
+      12,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    49,    49,    50,    51,    52,    58,    59,    60,    64,
-      66
+       0,    51,    51,    52,    53,    54,    60,    61,    62,    63,
+      64,    68,    70,    71
 };
 #endif
 
@@ -449,9 +452,9 @@ static const yytype_uint8 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "NUMBER", "WORD", "STR", "EQUAL", "EOL",
-  "CHOOSE", "SHEET", "SELECT", "ALL", "WHERE", "QUOTE", "$accept", "app",
-  "predicate", "exp", 0
+  "$end", "error", "$undefined", "NUMBER", "WORD", "STR", "OR_OP",
+  "EQUAL", "EOL", "CHOOSE", "SHEET", "SELECT", "ALL", "WHERE", "QUOTE",
+  "$accept", "app", "predicate", "exp", 0
 };
 #endif
 
@@ -461,22 +464,22 @@ static const char *const yytname[] =
 static const yytype_uint16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267,   268
+     265,   266,   267,   268,   269
 };
 # endif
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    14,    15,    15,    15,    15,    16,    16,    16,    17,
-      17
+       0,    15,    16,    16,    16,    16,    17,    17,    17,    17,
+      17,    18,    18,    18
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     0,     3,     3,     1,     0,     3,     3,     0,
-       6
+       0,     2,     0,     3,     3,     1,     0,     3,     3,     3,
+       0,     0,     6,     5
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -485,53 +488,56 @@ static const yytype_uint8 yyr2[] =
 static const yytype_uint8 yydefact[] =
 {
        2,     5,     0,     1,     0,     0,     0,     4,     0,     3,
-       0,     0,     6,     0,    10,     0,     7,     8
+       0,     0,    13,     6,     0,    12,     0,     6,     7,     8,
+       9
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     2,    14,     6
+      -1,     2,    15,     6
 };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-#define YYPACT_NINF -5
+#define YYPACT_NINF -8
 static const yytype_int8 yypact[] =
 {
-      -4,    -5,     0,    -5,    -2,    -3,     2,    -5,     6,    -5,
-       1,     3,     8,     7,    -5,    -1,    -5,    -5
+      -5,    -8,     0,    -8,     2,    -3,     3,    -8,     8,    -8,
+       4,    -7,    -8,     9,     7,    10,    -1,     9,    -8,    -8,
+      -8
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -5,    -5,    -5,    -5
+      -8,    -8,     1,    -8
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
    positive, shift that token.  If negative, reduce the rule which
    number is the opposite.  If zero, do what YYDEFACT says.
    If YYTABLE_NINF, syntax error.  */
-#define YYTABLE_NINF -10
+#define YYTABLE_NINF -12
 static const yytype_int8 yytable[] =
 {
-       3,     4,    16,     1,    17,     7,     8,    -9,     5,     9,
-      10,    11,    13,    15,     0,    12
+       3,     4,    18,     1,    19,    12,    13,     8,   -11,     5,
+       7,     9,    10,    14,    16,    11,    17,     0,    20
 };
 
 static const yytype_int8 yycheck[] =
 {
-       0,     1,     3,     7,     5,     7,     9,     7,     8,     7,
-       4,    10,     4,     6,    -1,    12
+       0,     1,     3,     8,     5,    12,    13,    10,     8,     9,
+       8,     8,     4,     4,     7,    11,     6,    -1,    17
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     7,    15,     0,     1,     8,    17,     7,     9,     7,
-       4,    10,    12,     4,    16,     6,     3,     5
+       0,     8,    16,     0,     1,     9,    18,     8,    10,     8,
+       4,    11,    12,    13,     4,    17,     7,     6,     3,     5,
+      17
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1346,38 +1352,48 @@ yyreduce:
   switch (yyn)
     {
         case 3:
-#line 50 "parser.y"
+#line 52 "parser.y"
     {  evaluate((yyvsp[(2) - (3)].qval)); return 1; ;}
     break;
 
   case 4:
-#line 51 "parser.y"
+#line 53 "parser.y"
     { return 1; ;}
     break;
 
   case 5:
-#line 52 "parser.y"
+#line 54 "parser.y"
     { return 1; ;}
     break;
 
   case 7:
-#line 59 "parser.y"
+#line 61 "parser.y"
     { value val = {.ival = (yyvsp[(3) - (3)].intval)}; (yyval.pval) = form_predicate(strdup((yyvsp[(1) - (3)].strval)), EQUALS, val, INT); ;}
     break;
 
   case 8:
-#line 60 "parser.y"
+#line 62 "parser.y"
     { value val = {.sval = remove_quotes(strdup((yyvsp[(3) - (3)].strval)))}; (yyval.pval) = form_predicate(strdup((yyvsp[(1) - (3)].strval)), EQUALS, val, STRING); ;}
     break;
 
-  case 10:
-#line 66 "parser.y"
-    { (yyval.qval) = form_query((yyvsp[(3) - (6)].strval), (yyvsp[(6) - (6)].pval)); ;}
+  case 9:
+#line 63 "parser.y"
+    {(yyval.pval) = form_comp_predicate((yyvsp[(1) - (3)].pval), (yyvsp[(3) - (3)].pval), OR);}
+    break;
+
+  case 12:
+#line 70 "parser.y"
+    { (yyval.qval) = form_query((yyvsp[(3) - (6)].strval), (yyvsp[(6) - (6)].pval), false); ;}
+    break;
+
+  case 13:
+#line 71 "parser.y"
+    {(yyval.qval) = form_query((yyvsp[(3) - (5)].strval), NULL, true); ;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1381 "parser.tab.c"
+#line 1397 "parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1591,7 +1607,7 @@ yyreturn:
 }
 
 
-#line 73 "parser.y"
+#line 78 "parser.y"
 
 
 
