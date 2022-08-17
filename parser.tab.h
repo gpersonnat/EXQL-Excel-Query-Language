@@ -43,14 +43,21 @@
      WORD = 259,
      STR = 260,
      OR_OP = 261,
-     EQUAL = 262,
-     EOL = 263,
-     CHOOSE = 264,
-     SHEET = 265,
-     SELECT = 266,
-     ALL = 267,
-     WHERE = 268,
-     QUOTE = 269
+     AND_OP = 262,
+     EQUAL = 263,
+     GREATER_OP = 264,
+     LESS_OP = 265,
+     GREATER_EQ_OP = 266,
+     LESS_EQ_OP = 267,
+     EOL = 268,
+     CHOOSE = 269,
+     SHEET = 270,
+     SELECT = 271,
+     ALL = 272,
+     WHERE = 273,
+     QUOTE = 274,
+     OPEN = 275,
+     CLOSE = 276
    };
 #endif
 /* Tokens.  */
@@ -58,14 +65,21 @@
 #define WORD 259
 #define STR 260
 #define OR_OP 261
-#define EQUAL 262
-#define EOL 263
-#define CHOOSE 264
-#define SHEET 265
-#define SELECT 266
-#define ALL 267
-#define WHERE 268
-#define QUOTE 269
+#define AND_OP 262
+#define EQUAL 263
+#define GREATER_OP 264
+#define LESS_OP 265
+#define GREATER_EQ_OP 266
+#define LESS_EQ_OP 267
+#define EOL 268
+#define CHOOSE 269
+#define SHEET 270
+#define SELECT 271
+#define ALL 272
+#define WHERE 273
+#define QUOTE 274
+#define OPEN 275
+#define CLOSE 276
 
 
 
@@ -82,7 +96,7 @@ typedef union YYSTYPE
  query* qval;
 }
 /* Line 1529 of yacc.c.  */
-#line 86 "parser.tab.h"
+#line 100 "parser.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

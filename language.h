@@ -3,7 +3,9 @@
 
 char* remove_quotes(char* string);
 
-typedef enum { AND, OR, EQUALS } relation;
+typedef enum { EQUALS, GREATER, LESS, GREATER_EQ, LESS_EQ } relation;
+
+typedef enum { AND, OR } operator;
 
 typedef union 
 {
@@ -55,7 +57,7 @@ typedef union
 
 predicate* form_predicate(char* field, relation relation, value value, valuetype type);
 
-predicate* form_comp_predicate(predicate* p1, predicate* p2, relation op);
+predicate* form_comp_predicate(predicate* p1, predicate* p2, operator op);
 
 query* form_query(char* sheetname, predicate* predicate, bool select_all);
 

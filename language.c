@@ -23,7 +23,9 @@ char* remove_quotes(char* string)
 }
 
 
-typedef enum { AND, OR, EQUALS } relation;
+typedef enum { EQUALS, GREATER, LESS, GREATER_EQ, LESS_EQ } relation;
+
+typedef enum { AND, OR } operator;
 
 typedef union 
 {
@@ -52,7 +54,7 @@ typedef struct predicate
 
     struct {
     struct predicate* predicate1;
-    relation operator;
+    operator operator;
     struct predicate* predicate2;
     } compound ;
 
@@ -103,7 +105,7 @@ predicate* form_predicate(char* field, relation relation, value value, valuetype
     return p;   
 }
 
-predicate* form_comp_predicate(predicate* p1, predicate* p2, relation op) 
+predicate* form_comp_predicate(predicate* p1, predicate* p2, operator op) 
 {
     predicate* p = malloc(sizeof(predicate));
     p->type = COMPOUND;
@@ -123,6 +125,66 @@ query* form_query(char* sheetname, predicate* predicate, bool select_all)
     return q;
 }
 
+bool compare_val(char* s1, char*s2, relation op, valuetype type)
+{
+    switch(type) 
+    {
+        case INT: 
+        {
+            switch(op)
+            {
+                case EQUALS: 
+                {
+                    return atoi(s1) == atoi(s2);
+                }
+                case GREATER:
+                {
+                    return atoi(s1) > atoi(s2);
+                }
+                case GREATER_EQ:
+                {
+                    return atoi(s1) >= atoi(s2);
+                }
+                case LESS:
+                {
+                    return atoi(s1) < atoi(s2);
+                }
+                case LESS_EQ:
+                {
+                    return atoi(s1) <= atoi(s2);
+                }
+            }
+        }
+        case STRING:
+        {
+            switch(op)
+            {
+                case EQUALS: 
+                {
+                    return strcmp(remove_quotes(s1), s2) == 0;
+                }
+                case GREATER:
+                {
+                    return strcmp(remove_quotes(s1), s2) > 0;
+                }
+                case GREATER_EQ:
+                {
+                    return strcmp(remove_quotes(s1), s2) >= 0;
+                }
+                case LESS:
+                {
+                    return strcmp(remove_quotes(s1), s2) < 0;
+                }
+                 case LESS_EQ:
+                {
+                    return strcmp(remove_quotes(s1), s2) <= 0;
+                }
+            }
+
+        }
+    }
+}
+
 
 bool satisfy_predicate(predicate* predicate, char* row[], int num_cols, char* header_row[])
 {
@@ -133,8 +195,8 @@ bool satisfy_predicate(predicate* predicate, char* row[], int num_cols, char* he
             char* fieldname = strdup(predicate->simple_expr.field);
             relation op = predicate->simple_expr.operator;
             char val[MAX_CHARACTERS_CELL];
-        
-            switch (predicate->simple_expr.type)
+            valuetype type = predicate->simple_expr.type;
+            switch (type)
             {
                 case INT:
                 {
@@ -151,13 +213,9 @@ bool satisfy_predicate(predicate* predicate, char* row[], int num_cols, char* he
             for (int i = 0; i < num_cols; i++) 
             {
                
-                if (strcasecmp(fieldname, header_row[i]) == 0)
+                if (strcmp(fieldname, header_row[i]) == 0)
                 {
-                    if (strcasecmp(remove_quotes(row[i]), val) == 0) 
-                    {
-                        return true;
-                    }
-                    return false;
+                    return compare_val(row[i], val, op, type);
 
                 }
             }
@@ -167,7 +225,13 @@ bool satisfy_predicate(predicate* predicate, char* row[], int num_cols, char* he
         }
         case COMPOUND :
         {
-            return satisfy_predicate(predicate->compound.predicate1, row, num_cols, header_row) || satisfy_predicate(predicate->compound.predicate2, row, num_cols, header_row);
+            switch(predicate->compound.operator)
+            {
+                case OR: 
+                    return satisfy_predicate(predicate->compound.predicate1, row, num_cols, header_row) || satisfy_predicate(predicate->compound.predicate2, row, num_cols, header_row);
+                case AND:
+                    return satisfy_predicate(predicate->compound.predicate1, row, num_cols, header_row) && satisfy_predicate(predicate->compound.predicate2, row, num_cols, header_row);
+            }
         }
     }
 
