@@ -20,6 +20,7 @@ void yyerror(char* s);
  expr* eval;
  predicate* pval;
  query* qval;
+ node* colval;
 }
 
 /* declare tokens */
@@ -36,12 +37,17 @@ void yyerror(char* s);
 %token WHERE
 %token QUOTE
 %token OPEN CLOSE
+%token COMMA
+%token SEMICOLON
+%token COLUMNS
+%token COLON
 
 %left OR_OP AND_OP
 
-%type <qval> exp
 
+%type <qval> exp
 %type <pval> predicate
+%type <colval> columns
 
 
 
@@ -51,6 +57,7 @@ void yyerror(char* s);
 
 app: /* nothing */                       
  | app exp EOL     {  evaluate($2); return 1; } 
+ | app columns EOL  {  reverse_node(&($2)); print_list($2); return 2; }
  | app error EOL     { return 1; }
  | EOL               { return 1; }
  ;
@@ -75,13 +82,14 @@ predicate:
 ;
 
 columns:
-| column 
-| column 
+| WORD                                    { node* n = malloc(sizeof(node)); n->value = strdup($1); $$ = n;  }
+| WORD COMMA columns                       {  insert_node(&($3), strdup($1)); $$ = $3;   }
 
 exp:     
-//  | CHOOSE SHEET WORD SELECT ALL  { $$ = strdup($3); }
-  | CHOOSE SHEET WORD SELECT WHERE predicate { $$ = form_query($3, $6, false); }
-  | CHOOSE SHEET WORD SELECT ALL             {$$ = form_query($3, NULL, true); }
+  | CHOOSE SHEET WORD SELECT WHERE predicate {$$ = form_query($3, $6, false, NULL); }
+  | CHOOSE SHEET WORD SELECT ALL             {$$ = form_query($3, NULL, true,  NULL); }
+  | CHOOSE SHEET WORD SELECT WHERE predicate SEMICOLON COLUMNS COLON columns { reverse_node(&($10));$$ = form_query($3, $6, false, $10); }
+  | CHOOSE SHEET WORD SELECT ALL SEMICOLON COLUMNS COLON columns { reverse_node(&($9)); $$ = form_query($3, NULL, true, $9); }
 
  ;
 

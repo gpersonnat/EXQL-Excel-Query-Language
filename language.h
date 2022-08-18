@@ -55,11 +55,22 @@ typedef union
     predicate* predicate;
 } expr;
 
+typedef struct node 
+{
+    char* value;
+    struct node* next;
+
+} node;
+
+
+void insert_node(node** head, char* string);
+
+
 predicate* form_predicate(char* field, relation relation, value value, valuetype type);
 
 predicate* form_comp_predicate(predicate* p1, predicate* p2, operator op);
 
-query* form_query(char* sheetname, predicate* predicate, bool select_all);
+query* form_query(char* sheetname, predicate* predicate, bool select_all, node* columns);
 
 
 bool satisfy_predicate(predicate* predicate, char* row[], int num_cols, char* header_row[]);
@@ -67,5 +78,7 @@ bool satisfy_predicate(predicate* predicate, char* row[], int num_cols, char* he
 void evaluate(query* q);
 
 
+void print_list(node* head);
 
 
+void reverse_node(node** head);

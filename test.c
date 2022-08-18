@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 
 char* remove_escape(char* string)
@@ -80,14 +81,82 @@ int split_line(char* line, char* row[])
 
 
 
+typedef struct node 
+{
+    char* value;
+    struct node* next;
+
+} node;
+
+
+
+void insert_node(node** head, char* string)
+{
+    node* new_node = malloc(sizeof(node));
+
+    node* cursor = *head;
+
+    new_node->value = strdup(string);
+
+    new_node->next = NULL;
+
+
+    if (*head == NULL)
+    {
+        *head = new_node;
+        return;
+    }
+    while (cursor->next != NULL)
+    {
+        cursor = cursor->next;
+    }
+
+    cursor->next = new_node;
+
+}
+
+void reverse_node(node** head) 
+{
+    node* prev = NULL;
+    node* current = *head;
+    node* next = NULL;
+
+    while (current != NULL) 
+    {
+        next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+    }
+
+    *head = prev;
+}
+
+
 int main()
 {
-    char* row[5];
+    node* n = malloc(sizeof(node));
 
-    int cols = split_line("7,Mobile Finance Manager,6,5828,\"Mobile Finance Manager (MFM) integrates three key mobile banking technologies — app, WAP, and SMS — with mobile hardware innovations to grant dynamic anytime/anywhere access to feature-rich mobile banking. MFM applications provide a rich mobile banking experience on all major devices including iOS, Android, BlackBerry, Kindle Fire, Windows, Palm, and Java. App functionality includes bill pay, mobile deposit capture, secure messages, and multiple transfer flavors. WAP banking provides important banking features through any browser-enabled smartphone. The WAP is smart enough to identify the browser and respond accordingly with options appropriate to the mobile browser. SMS text message-based banking is available to all MFM users, but is especially convenient for users with older mobile devices that might not support apps or WAP. In addition to standard banking functions, SMS includes banking alerts that can notify users of issues without needing to log in to an app or online banking.\"\n", row);
+    n->value = "test1";
 
-    for (int i = 0; i < 5; i++) 
+    insert_node(&n, "test2");
+
+    insert_node(&n, "test4");
+
+    insert_node(&n, "test5");
+
+    reverse_node(&n);
+
+
+    node* cursor = n;
+
+    while (cursor)
     {
-        printf("%s\n", row[i]);
+        printf("%s\n", cursor->value);
+        cursor = cursor->next;
     }
+
+
+
+    free(n);
 }

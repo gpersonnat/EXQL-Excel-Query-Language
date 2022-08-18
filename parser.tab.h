@@ -57,7 +57,11 @@
      WHERE = 273,
      QUOTE = 274,
      OPEN = 275,
-     CLOSE = 276
+     CLOSE = 276,
+     COMMA = 277,
+     SEMICOLON = 278,
+     COLUMNS = 279,
+     COLON = 280
    };
 #endif
 /* Tokens.  */
@@ -80,6 +84,10 @@
 #define QUOTE 274
 #define OPEN 275
 #define CLOSE 276
+#define COMMA 277
+#define SEMICOLON 278
+#define COLUMNS 279
+#define COLON 280
 
 
 
@@ -94,9 +102,10 @@ typedef union YYSTYPE
  expr* eval;
  predicate* pval;
  query* qval;
+ node* colval;
 }
 /* Line 1529 of yacc.c.  */
-#line 100 "parser.tab.h"
+#line 109 "parser.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

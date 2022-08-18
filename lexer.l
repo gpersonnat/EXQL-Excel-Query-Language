@@ -23,12 +23,16 @@ digit [0-9]
 "where" { return WHERE; }
 "or"    { return OR_OP; }
 "and"   { return AND_OP; }
+"columns" { return COLUMNS; }
+":"       { return COLON; }
 ">"     { return GREATER_OP; }
 "<"     { return LESS_OP; }
 ">="    { return GREATER_EQ_OP; }
 "<="    { return LESS_EQ_OP; }
 "("     { return OPEN; }
 ")"     { return CLOSE; }
+","     { return COMMA; }
+";"     { return SEMICOLON; }
 {alpha}({alpha}|{digit})* { yylval.strval = strdup(yytext); return WORD; }
 "="    { return EQUAL; }
 "\""   { return QUOTE; }
