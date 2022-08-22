@@ -262,7 +262,6 @@ int split_line(char* line, char* row[])
    {
         if ((line[i] == ',' || line[i] == '\n') && !within_quote)
         {
-        
            row[column] = strdup(slice(line, start, i-1));
            start = i + 1;
            column++;
@@ -281,7 +280,6 @@ int split_line(char* line, char* row[])
         {
             within_quote = false;
         }
-
    }
    return column;
 }
