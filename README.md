@@ -20,7 +20,12 @@ workbook>
 ### Example
 
 ```
-.
+% ./exql test.xlsx
 
+test> 
 
 ```
+
+When you start the REPL, all the sheets in the excel file will be converted to a CSV file, and stored in a folder called {workbook_name}.
+
+In this example, all sheets (converted to CSV files) in test.xlsx are stored in a folder called test.

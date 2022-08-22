@@ -145,6 +145,9 @@
 #include <stdlib.h>
 #include "language.h"
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 int yylex();
 
@@ -173,7 +176,7 @@ void yyerror(char* s);
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 17 "parser.y"
+#line 20 "parser.y"
 {
  int intval;
  double floatval;
@@ -186,7 +189,7 @@ typedef union YYSTYPE
  insert_query* insertval;
 }
 /* Line 193 of yacc.c.  */
-#line 190 "parser.tab.c"
+#line 193 "parser.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -199,7 +202,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 203 "parser.tab.c"
+#line 206 "parser.tab.c"
 
 #ifdef short
 # undef short
@@ -505,11 +508,11 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    74,    74,    75,    76,    77,    78,    79,    85,    86,
-      87,    88,    89,    90,    91,    92,    93,    94,    95,    96,
-      97,    98,   101,   102,   103,   107,   108,   109,   110,   111,
-     114,   115,   116,   117,   118,   121,   122,   123,   125,   126,
-     127,   130,   131,   133,   134
+       0,    77,    77,    78,    79,    80,    81,    82,    88,    89,
+      90,    91,    92,    93,    94,    95,    96,    97,    98,    99,
+     100,   101,   104,   105,   106,   110,   111,   112,   113,   114,
+     117,   118,   119,   120,   121,   124,   125,   126,   128,   129,
+     130,   133,   134,   136,   137
 };
 #endif
 
@@ -1464,178 +1467,178 @@ yyreduce:
   switch (yyn)
     {
         case 3:
-#line 75 "parser.y"
+#line 78 "parser.y"
     {  evaluate((yyvsp[(2) - (3)].qval)); return 1; ;}
     break;
 
   case 4:
-#line 76 "parser.y"
+#line 79 "parser.y"
     {  update_file((yyvsp[(2) - (3)].uval));  return 1; ;}
     break;
 
   case 5:
-#line 77 "parser.y"
+#line 80 "parser.y"
     { insert((yyvsp[(2) - (3)].insertval)) ; return 1; ;}
     break;
 
   case 6:
-#line 78 "parser.y"
+#line 81 "parser.y"
     { return 1; ;}
     break;
 
   case 7:
-#line 79 "parser.y"
+#line 82 "parser.y"
     { return 1; ;}
     break;
 
   case 9:
-#line 86 "parser.y"
+#line 89 "parser.y"
     { value val = {.ival = (yyvsp[(3) - (3)].intval), .type = INT}; (yyval.pval) = form_predicate(strdup((yyvsp[(1) - (3)].strval)), EQUALS, val, INT); ;}
     break;
 
   case 10:
-#line 87 "parser.y"
+#line 90 "parser.y"
     { value val = {.sval = remove_quotes(strdup((yyvsp[(3) - (3)].strval))), .type = STRING}; (yyval.pval) = form_predicate(strdup((yyvsp[(1) - (3)].strval)), EQUALS, val, STRING); ;}
     break;
 
   case 11:
-#line 88 "parser.y"
+#line 91 "parser.y"
     { value val = {.ival = (yyvsp[(3) - (3)].intval), .type = INT}; (yyval.pval) = form_predicate(strdup((yyvsp[(1) - (3)].strval)), GREATER, val, INT); ;}
     break;
 
   case 12:
-#line 89 "parser.y"
+#line 92 "parser.y"
     { value val = {.sval = remove_quotes(strdup((yyvsp[(3) - (3)].strval))), .type = STRING}; (yyval.pval) = form_predicate(strdup((yyvsp[(1) - (3)].strval)), GREATER, val, STRING); ;}
     break;
 
   case 13:
-#line 90 "parser.y"
+#line 93 "parser.y"
     { value val = {.ival = (yyvsp[(3) - (3)].intval), .type = INT}; (yyval.pval) = form_predicate(strdup((yyvsp[(1) - (3)].strval)), GREATER_EQ, val, INT); ;}
     break;
 
   case 14:
-#line 91 "parser.y"
+#line 94 "parser.y"
     { value val = {.sval = remove_quotes(strdup((yyvsp[(3) - (3)].strval))), .type = STRING}; (yyval.pval) = form_predicate(strdup((yyvsp[(1) - (3)].strval)), GREATER_EQ, val, STRING); ;}
     break;
 
   case 15:
-#line 92 "parser.y"
+#line 95 "parser.y"
     { value val = {.ival = (yyvsp[(3) - (3)].intval), .type = INT}; (yyval.pval) = form_predicate(strdup((yyvsp[(1) - (3)].strval)), LESS, val, INT); ;}
     break;
 
   case 16:
-#line 93 "parser.y"
+#line 96 "parser.y"
     { value val = {.sval = remove_quotes(strdup((yyvsp[(3) - (3)].strval))), .type = STRING}; (yyval.pval) = form_predicate(strdup((yyvsp[(1) - (3)].strval)), LESS_EQ, val, STRING); ;}
     break;
 
   case 17:
-#line 94 "parser.y"
+#line 97 "parser.y"
     { value val = {.ival = (yyvsp[(3) - (3)].intval), .type = INT}; (yyval.pval) = form_predicate(strdup((yyvsp[(1) - (3)].strval)), LESS_EQ, val, INT); ;}
     break;
 
   case 18:
-#line 95 "parser.y"
+#line 98 "parser.y"
     { value val = {.sval = remove_quotes(strdup((yyvsp[(3) - (3)].strval))), .type = STRING}; (yyval.pval) = form_predicate(strdup((yyvsp[(1) - (3)].strval)), LESS_EQ, val, STRING); ;}
     break;
 
   case 19:
-#line 96 "parser.y"
+#line 99 "parser.y"
     {(yyval.pval) = form_comp_predicate((yyvsp[(1) - (3)].pval), (yyvsp[(3) - (3)].pval), OR); ;}
     break;
 
   case 20:
-#line 97 "parser.y"
+#line 100 "parser.y"
     {(yyval.pval) = form_comp_predicate((yyvsp[(1) - (3)].pval), (yyvsp[(3) - (3)].pval), AND); ;}
     break;
 
   case 21:
-#line 98 "parser.y"
+#line 101 "parser.y"
     {(yyval.pval) = (yyvsp[(2) - (3)].pval); ;}
     break;
 
   case 23:
-#line 102 "parser.y"
+#line 105 "parser.y"
     { node* n = malloc(sizeof(node)); n->value = strdup((yyvsp[(1) - (1)].strval)); (yyval.colval) = n;  ;}
     break;
 
   case 24:
-#line 103 "parser.y"
+#line 106 "parser.y"
     {  insert_node(&((yyvsp[(3) - (3)].colval)), strdup((yyvsp[(1) - (3)].strval))); (yyval.colval) = (yyvsp[(3) - (3)].colval);  ;}
     break;
 
   case 26:
-#line 108 "parser.y"
+#line 111 "parser.y"
     {(yyval.qval) = form_query((yyvsp[(3) - (6)].strval), (yyvsp[(6) - (6)].pval), false, NULL); ;}
     break;
 
   case 27:
-#line 109 "parser.y"
+#line 112 "parser.y"
     {(yyval.qval) = form_query((yyvsp[(3) - (5)].strval), NULL, true,  NULL); ;}
     break;
 
   case 28:
-#line 110 "parser.y"
+#line 113 "parser.y"
     { reverse_node(&((yyvsp[(10) - (10)].colval)));(yyval.qval) = form_query((yyvsp[(3) - (10)].strval), (yyvsp[(6) - (10)].pval), false, (yyvsp[(10) - (10)].colval)); ;}
     break;
 
   case 29:
-#line 111 "parser.y"
+#line 114 "parser.y"
     { reverse_node(&((yyvsp[(9) - (9)].colval))); (yyval.qval) = form_query((yyvsp[(3) - (9)].strval), NULL, true, (yyvsp[(9) - (9)].colval)); ;}
     break;
 
   case 31:
-#line 115 "parser.y"
+#line 118 "parser.y"
     { value val = {.ival = (yyvsp[(9) - (9)].intval), .type = INT}; query* q = form_query((yyvsp[(3) - (9)].strval), (yyvsp[(5) - (9)].pval), false, (yyvsp[(7) - (9)].colval)); (yyval.uval) = form_update(q, val); ;}
     break;
 
   case 32:
-#line 116 "parser.y"
+#line 119 "parser.y"
     { value val = {.sval = remove_quotes(strdup((yyvsp[(9) - (9)].strval))), .type = STRING}; query* q = form_query((yyvsp[(3) - (9)].strval), (yyvsp[(5) - (9)].pval), false, (yyvsp[(7) - (9)].colval)); (yyval.uval) = form_update(q, val); ;}
     break;
 
   case 33:
-#line 117 "parser.y"
+#line 120 "parser.y"
     { value val = {.ival = (yyvsp[(8) - (8)].intval), .type = INT}; query* q = form_query((yyvsp[(3) - (8)].strval), NULL, true, (yyvsp[(6) - (8)].colval)); (yyval.uval) = form_update(q, val); ;}
     break;
 
   case 34:
-#line 118 "parser.y"
+#line 121 "parser.y"
     { value val = {.sval = remove_quotes(strdup((yyvsp[(8) - (8)].strval))), .type = STRING}; query* q = form_query((yyvsp[(3) - (8)].strval), NULL, true, (yyvsp[(6) - (8)].colval)); (yyval.uval) = form_update(q, val); ;}
     break;
 
   case 36:
-#line 122 "parser.y"
+#line 125 "parser.y"
     {value val = {.ival = (yyvsp[(3) - (3)].intval), .type = INT}; pair p = {.column = strdup((yyvsp[(1) - (3)].strval)), .value = val}; node_pair* n = malloc(sizeof(node_pair)); n->value = p; (yyval.pairsval) = n; ;}
     break;
 
   case 37:
-#line 123 "parser.y"
+#line 126 "parser.y"
     {value val = {.sval = remove_quotes(strdup((yyvsp[(3) - (3)].strval))), .type = STRING}; pair p = {.column = strdup((yyvsp[(1) - (3)].strval)), .value = val}; node_pair* n = malloc(sizeof(node_pair)); n->value = p; (yyval.pairsval) = n; ;}
     break;
 
   case 39:
-#line 126 "parser.y"
+#line 129 "parser.y"
     { (yyval.pairsval) = (yyvsp[(1) - (1)].pairsval); ;}
     break;
 
   case 40:
-#line 127 "parser.y"
+#line 130 "parser.y"
     { insert_node_pair(&((yyvsp[(3) - (3)].pairsval)), (yyvsp[(1) - (3)].pairsval)->value); (yyval.pairsval) = (yyvsp[(3) - (3)].pairsval);}
     break;
 
   case 42:
-#line 131 "parser.y"
+#line 134 "parser.y"
     { (yyval.pairsval) = (yyvsp[(2) - (3)].pairsval); ;}
     break;
 
   case 44:
-#line 134 "parser.y"
+#line 137 "parser.y"
     {(yyval.insertval) = form_insert((yyvsp[(5) - (5)].strval), (yyvsp[(2) - (5)].pairsval)); ;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1639 "parser.tab.c"
+#line 1642 "parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1849,7 +1852,7 @@ yyreturn:
 }
 
 
-#line 140 "parser.y"
+#line 143 "parser.y"
 
 
 
@@ -1874,6 +1877,7 @@ char* read_fname(char* filename)
 
 int main(int argc, char **argv)
 {
+
   
 
   char* excel_file = argv[1];
@@ -1881,11 +1885,17 @@ int main(int argc, char **argv)
 
   char* name = read_fname(excel_file);
 
+  char* dirname = name;
+
+  mkdir(dirname,0777);
+
+
+
   char directory_command[1000];
 
   sprintf(directory_command, "mkdir %s", name);
 
-  system(directory_command);
+  // system(directory_command);
 
   set_workbook(name);
 

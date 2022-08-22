@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include "language.h"
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 int yylex();
 
@@ -161,6 +164,7 @@ char* read_fname(char* filename)
 
 int main(int argc, char **argv)
 {
+
   
 
   char* excel_file = argv[1];
@@ -168,11 +172,10 @@ int main(int argc, char **argv)
 
   char* name = read_fname(excel_file);
 
-  char directory_command[1000];
+  char* dirname = name;
 
-  sprintf(directory_command, "mkdir %s", name);
+  mkdir(dirname,0777);
 
-  system(directory_command);
 
   set_workbook(name);
 
