@@ -1,19 +1,23 @@
 #include <stdbool.h>
 
 
+
 char* remove_quotes(char* string);
 
 typedef enum { EQUALS, GREATER, LESS, GREATER_EQ, LESS_EQ } relation;
 
 typedef enum { AND, OR } operator;
 
-typedef union 
+typedef enum { INT, STRING } valuetype;
+
+
+typedef struct 
 {
     int ival;
     char* sval;
+    valuetype type;
 } value;
 
-typedef enum { INT, STRING } valuetype;
 
 typedef struct 
 {
@@ -42,25 +46,52 @@ typedef struct predicate
 } predicate;
 
 
-typedef struct 
-{
-    char* sheetname;
-    predicate* expr;
-
-} query;
-
-
-typedef union 
-{
-    predicate* predicate;
-} expr;
-
 typedef struct node 
 {
     char* value;
     struct node* next;
 
 } node;
+
+
+
+
+typedef struct 
+{
+    char* sheetname;
+    predicate* expr;
+    bool select_all;
+    node* columns;
+
+} query;
+
+typedef struct 
+{
+    query* query;
+    value value;
+
+} update;
+
+typedef struct {
+    char* column;
+    value value;
+} pair;
+
+
+typedef struct node_pair
+{
+    pair value;
+    struct node_pair* next;
+} node_pair;
+
+typedef struct 
+{
+    node_pair* pairs;
+    char* sheetname;
+
+} insert_query;
+
+
 
 
 void insert_node(node** head, char* string);
@@ -72,6 +103,8 @@ predicate* form_comp_predicate(predicate* p1, predicate* p2, operator op);
 
 query* form_query(char* sheetname, predicate* predicate, bool select_all, node* columns);
 
+insert_query* form_insert(char* sheetname, node_pair* pairs);
+
 
 bool satisfy_predicate(predicate* predicate, char* row[], int num_cols, char* header_row[]);
 
@@ -82,3 +115,18 @@ void print_list(node* head);
 
 
 void reverse_node(node** head);
+
+update* form_update(query* query, value value);
+
+void update_file(update* update);
+
+void insert_node_pair(node_pair** head, pair pair);
+
+void print_pair_list(node_pair* head);
+
+
+void insert(insert_query* query);
+
+void set_workbook(char* name);
+
+

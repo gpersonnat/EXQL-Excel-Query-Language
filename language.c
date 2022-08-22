@@ -1,10 +1,32 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #define MAX_CHARACTERS_CELL 32767
 #define MAX_COLUMN_CSV 16384
 
+
+char* workbook;
+
+
+
+void set_workbook(char* name)
+{
+    workbook = strdup(name);
+}
+
+
+int col_number(char* string, char* array[], int num_columns)
+{
+    for (int i = 0; i < num_columns; i++)
+    {
+        if (strcmp(array[i], string) == 0)
+        {
+            return i;
+        }
+    }
+    return 0;
+}
 
 char* remove_quotes(char* string)
 {
@@ -47,14 +69,17 @@ typedef enum { EQUALS, GREATER, LESS, GREATER_EQ, LESS_EQ } relation;
 
 typedef enum { AND, OR } operator;
 
-typedef union 
+typedef enum { INT, STRING } valuetype;
+
+
+typedef struct 
 {
     int ival;
     char* sval;
+    valuetype type;
 } value;
 
 
-typedef enum { INT, STRING } valuetype;
 
 typedef struct 
 {
@@ -94,10 +119,34 @@ typedef struct
 } query;
 
 
-typedef union 
+typedef struct 
 {
-    predicate* predicate;
-} expr;
+    query* query;
+    value value;
+
+} update;
+
+typedef struct {
+    char* column;
+    value value;
+} pair;
+
+
+typedef struct node_pair
+{
+    pair value;
+    struct node_pair* next;
+} node_pair;
+
+
+typedef struct 
+{
+    node_pair* pairs;
+    char* sheetname;
+
+} insert_query;
+
+
 
 
 
@@ -115,10 +164,12 @@ predicate* form_predicate(char* field, relation relation, value value, valuetype
     {
         case INT:
             p->simple_expr.value.ival = value.ival;
+            p->simple_expr.value.type = INT;
             p->simple_expr.type = INT;
             break;
         case STRING:
             p->simple_expr.value.sval = strdup(value.sval);
+            p->simple_expr.value.type = STRING;
             p->simple_expr.type = STRING;
             break;
     }
@@ -144,7 +195,17 @@ query* form_query(char* sheetname, predicate* predicate, bool select_all, node* 
     q->expr = predicate;
     q->select_all = select_all;
     q->columns = columns;
+    
     return q;
+}
+
+update* form_update(query* query, value value)
+{
+    update* u = malloc(sizeof(update));
+    u->query = query;
+    u->value = value;
+
+    return u;
 }
 
 bool compare_val(char* s1, char*s2, relation op, valuetype type)
@@ -250,9 +311,15 @@ bool satisfy_predicate(predicate* predicate, char* row[], int num_cols, char* he
             switch(predicate->compound.operator)
             {
                 case OR: 
-                    return satisfy_predicate(predicate->compound.predicate1, row, num_cols, header_row) || satisfy_predicate(predicate->compound.predicate2, row, num_cols, header_row);
+                    return 
+                    satisfy_predicate(predicate->compound.predicate1, row, num_cols, header_row) 
+                    || 
+                    satisfy_predicate(predicate->compound.predicate2, row, num_cols, header_row);
                 case AND:
-                    return satisfy_predicate(predicate->compound.predicate1, row, num_cols, header_row) && satisfy_predicate(predicate->compound.predicate2, row, num_cols, header_row);
+                    return 
+                    satisfy_predicate(predicate->compound.predicate1, row, num_cols, header_row) 
+                    && 
+                    satisfy_predicate(predicate->compound.predicate2, row, num_cols, header_row);
             }
         }
     }
@@ -348,6 +415,8 @@ void insert_node(node** head, char* string)
 
 }
 
+
+
 void reverse_node(node** head) 
 {
     node* prev = NULL;
@@ -378,6 +447,19 @@ int node_to_array(node* head, char* array[])
     return i;
 }
 
+int node_pair_to_array(node_pair* head, pair array[]) 
+{
+    node_pair* cursor = head;
+    int i = 0;
+    while (cursor)
+    {
+        array[i] = cursor->value;
+        i++;
+        cursor = cursor->next;
+    }
+    return i;
+}
+
 bool mem(char* string, char* array[], int num_columns)
 {
     for (int i = 0; i < num_columns; i++)
@@ -390,12 +472,126 @@ bool mem(char* string, char* array[], int num_columns)
     return false;
 }
 
+void insert_node_pair(node_pair** head, pair pair)
+{
+    node_pair* new_node = malloc(sizeof(node_pair));
+
+    node_pair* cursor = *head;
+
+    new_node->value = pair;
+
+    new_node->next = NULL;
+
+
+    if (*head == NULL)
+    {
+        *head = new_node;
+        return;
+    }
+    while (cursor->next != NULL)
+    {
+        cursor = cursor->next;
+    }
+
+    cursor->next = new_node;
+
+}
+
+
+insert_query* form_insert(char* sheetname, node_pair* pairs) 
+{
+    insert_query* i = malloc(sizeof(insert_query));
+    i->sheetname = strdup(sheetname);
+    i->pairs = pairs;
+    return i;
+
+}
+
+void print_pair_list(node_pair* head) 
+{
+    node_pair* cursor = head;
+    while (cursor)
+    {
+        switch(cursor->value.value.type)
+        {
+            case INT:
+                printf("Key: %s Value: %d \n", cursor->value.column, cursor->value.value.ival);
+                break;
+            case STRING:
+                printf("Key: %s Value: %s \n", cursor->value.column, cursor->value.value.sval);
+                break;
+
+        }
+        
+        cursor = cursor->next;
+    }
+}
+
+void print_pair_array(pair row[], int num_columns)
+{
+    for (int i = 0; i < num_columns; i++) 
+    {
+        switch(row[i].value.type)
+        {
+            case INT:
+                printf("Key: %s Value: %d \n", row[i].column, row[i].value.ival);
+                break;
+            case STRING:
+                printf("Key: %s Value: %s \n", row[i].column, row[i].value.sval);
+                break;
+
+        }
+        
+    }
+}
+
+bool comes_first(char* s1, char*s2, char* array[], int num_columns)
+{
+    for (int i = 0; i < num_columns; i++)
+    {
+        if (strcmp(s1, array[i]) == 0)
+        {
+            return true;
+        }
+        if (strcmp(s2, array[i]) == 0) 
+        {
+            return false;
+        }
+    }
+    return false;
+}
+
+void swap(pair* x, pair* y)
+{
+    pair tmp = *x;
+    *x = *y;
+    *y = tmp;
+}
+
+// Uses bubblesort to sort key value pairs based on order of columns
+void sort(pair pairs[], char* header_row[], int num_columns)
+{
+    for (int i = 0; i < num_columns - 1; i++)
+    {
+        for (int j = 0; j < num_columns - i - 1; j++)
+        {
+            if (!comes_first(pairs[j].column, pairs[j + 1].column, header_row, num_columns))
+            {
+                swap(&pairs[j], &pairs[j + 1]);
+            }
+        }
+    }
+
+}
+
 void evaluate(query* q)
 {
  
     char sheet[100];
 
-    sprintf(sheet, "%s.csv", q->sheetname);
+
+
+    sprintf(sheet, "%s/%s.csv", workbook, q->sheetname);
 
 
     FILE* sheet_data = fopen(sheet, "r");
@@ -488,9 +684,7 @@ void evaluate(query* q)
                 {
                 printf("|");
              }
-            }
-
-            
+            }         
         }
         printf("\n");
 
@@ -502,4 +696,168 @@ void evaluate(query* q)
     fclose(sheet_data);
 }
 
+char* create_row(pair pairs[], int num_columns)
+{
+    char row_string[100000] = "";
+    for (int i = 0; i < num_columns; i++)
+    {   
+        switch(pairs[i].value.type)
+        {
+            case INT:
+            {
+                char val[MAX_CHARACTERS_CELL];
+                if (i != num_columns - 1)
+                {
+                    sprintf(val, "%d,", pairs[i].value.ival);
+                }
+                else
+                {
+                    sprintf(val, "%d\n", pairs[i].value.ival);
+                }
+                strcat(row_string, val);
+                break;
+            }
+            case STRING:
+            {
+                char val[MAX_CHARACTERS_CELL];
+                if (i != num_columns - 1)
+                {
+                    sprintf(val, "%s,", pairs[i].value.sval);
+                }
+                else
+                {
+                    sprintf(val, "%s\n", pairs[i].value.sval);
+                }
+                strcat(row_string, val);
+                break;
+            }
+        }
 
+    }
+    return strdup(row_string);
+}
+
+// update sheet types where Id = 6 set Name to "test"
+
+
+
+void update_file(update* update)
+{
+
+    char sheet[100];
+
+    char* sheet_name = update->query->sheetname;
+
+    sprintf(sheet, "%s/%s.csv", workbook,sheet_name);
+
+
+    FILE* sheet_data = fopen(sheet, "r");
+
+    char buffer[MAX_CHARACTERS_CELL];
+
+    fgets(buffer, MAX_CHARACTERS_CELL, sheet_data);
+    
+    char* header_row[MAX_COLUMN_CSV];
+
+    int num_columns = split_line(buffer, header_row);
+
+
+    int row_counter = 0;
+
+    while (fgets(buffer, MAX_CHARACTERS_CELL, sheet_data))
+    {
+        char* row[num_columns];
+
+        split_line(buffer, row);
+
+         if (!update->query->select_all)
+        {
+            
+            if (!satisfy_predicate(update->query->expr, row, num_columns, header_row))
+            {
+                row_counter++;
+                continue;
+            }
+        }
+            
+        char command[5000];
+    
+        switch(update->value.type) 
+        {
+            case INT:
+            {
+                int new_val = update->value.ival;
+                char* type = "int";
+                char* col_name = update->query->columns->value;
+                sprintf(command, "python3 update.py %s %d %s %d %s %d %s", col_name, new_val, "int", row_counter, sheet_name, col_number(col_name, header_row, num_columns), workbook);
+                system(command);
+                break;
+            }
+            case STRING:
+            {
+                char* new_val = update->value.sval;
+                char* col_name =  update->query->columns->value;
+                sprintf(command, "python3 update.py %s %s %s %d %s %d %s", col_name, new_val, "string", row_counter, sheet_name, col_number(col_name, header_row, num_columns), workbook);
+                system(command);
+                break;
+            }
+        }
+        row_counter++;
+    }
+    free(update);
+    fclose(sheet_data);
+}
+
+
+void insert(insert_query* query)
+{
+
+    char sheet[100];
+
+    char* sheet_name = query->sheetname;
+ 
+    sprintf(sheet, "%s/%s.csv", workbook, sheet_name);
+
+
+    FILE* sheet_data = fopen(sheet, "r");
+
+    char buffer[MAX_CHARACTERS_CELL];
+
+    // insert {Id : 5, Name : "test"} into sheet types
+
+    fgets(buffer, MAX_CHARACTERS_CELL, sheet_data);
+
+
+    char* header_row[MAX_COLUMN_CSV];
+    
+    int num_columns = split_line(buffer, header_row);
+
+
+    pair new_row[MAX_COLUMN_CSV];
+
+    node_pair_to_array(query->pairs, new_row);
+
+    sort(new_row, header_row, num_columns);
+
+    char* row_string = create_row(new_row, num_columns);
+
+    sheet_data = fopen(sheet, "a");
+
+    fputs(row_string, sheet_data);
+
+    char command[50000];
+    
+    printf("%s\n", workbook);
+
+
+    sprintf(command, "python3 insert.py %s %s %s", sheet_name, workbook, row_string);
+
+    printf("%s\n", command);
+
+    system(command);
+
+    fclose(sheet_data);
+
+    free(query);
+
+}

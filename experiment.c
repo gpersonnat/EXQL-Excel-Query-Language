@@ -3,6 +3,19 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+char* create_row(char* pairs[], int num_columns)
+{
+    char row_string[] = "";
+    for (int i = 0; i < num_columns; i++)
+    {       
+            strcat(row_string, pairs[i]);
+            break;
+   
+
+    }
+    return strdup(row_string);
+}
+
 
 char* remove_escape(char* string)
 {
@@ -132,31 +145,66 @@ void reverse_node(node** head)
     *head = prev;
 }
 
+char* read_fname(char* filename)
+{
+    char name[strlen(filename - 5)];
+    for (int i = 0; i < strlen(filename); i++)
+    {
+        if (filename[i] == '.')
+        {
+            return strdup(name);
+        }
+        name[i] = filename[i];
+    }
+    return strdup(name);
+}
 
 int main()
 {
-    node* n = malloc(sizeof(node));
 
-    n->value = "test1";
+    char destination[1000] = "Hello ";
+    char source[1000] = "World!";
+    printf("Concatenated String: %s\n",  strcat(destination,source));
+    return 0;
 
-    insert_node(&n, "test2");
+    // char* pairs[] = {"test1", "test2"};
 
-    insert_node(&n, "test4");
+    // char* row_string = strcat("", "test");
+    // printf("%s\n", row_string);
+    // char* name = read_fname("products.xlsx");
 
-    insert_node(&n, "test5");
+    // printf("%s\n", name);
+    
+    // char* excel_file = "products.xlsx";
 
-    reverse_node(&n);
-
-
-    node* cursor = n;
-
-    while (cursor)
-    {
-        printf("%s\n", cursor->value);
-        cursor = cursor->next;
-    }
+    // char name[30];
 
 
+    // sscanf(excel_file, "%s.xlsx", name);
 
-    free(n);
+    // printf("%s\n", name);
+    // node* n = malloc(sizeof(node));
+
+    // n->value = "test1";
+
+    // insert_node(&n, "test2");
+
+    // insert_node(&n, "test4");
+
+    // insert_node(&n, "test5");
+
+    // reverse_node(&n);
+
+
+    // node* cursor = n;
+
+    // while (cursor)
+    // {
+    //     printf("%s\n", cursor->value);
+    //     cursor = cursor->next;
+    // }
+
+
+
+    // free(n);
 }

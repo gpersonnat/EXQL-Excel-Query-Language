@@ -61,7 +61,16 @@
      COMMA = 277,
      SEMICOLON = 278,
      COLUMNS = 279,
-     COLON = 280
+     COLON = 280,
+     UPDATE = 281,
+     SET = 282,
+     TO = 283,
+     ADD = 284,
+     ROW = 285,
+     O_BRACE = 286,
+     C_BRACE = 287,
+     INTO = 288,
+     INSERT = 289
    };
 #endif
 /* Tokens.  */
@@ -88,24 +97,35 @@
 #define SEMICOLON 278
 #define COLUMNS 279
 #define COLON 280
+#define UPDATE 281
+#define SET 282
+#define TO 283
+#define ADD 284
+#define ROW 285
+#define O_BRACE 286
+#define C_BRACE 287
+#define INTO 288
+#define INSERT 289
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 16 "parser.y"
+#line 17 "parser.y"
 {
  int intval;
  double floatval;
  char* strval;
- expr* eval;
  predicate* pval;
  query* qval;
  node* colval;
+ update* uval;
+ node_pair* pairsval;
+ insert_query* insertval;
 }
 /* Line 1529 of yacc.c.  */
-#line 109 "parser.tab.h"
+#line 129 "parser.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

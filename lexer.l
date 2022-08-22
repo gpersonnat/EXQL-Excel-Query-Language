@@ -24,6 +24,13 @@ digit [0-9]
 "or"    { return OR_OP; }
 "and"   { return AND_OP; }
 "columns" { return COLUMNS; }
+"update"  { return UPDATE; }
+"set"     { return SET; }
+"add"     { return ADD; }
+"row"     { return ROW; }
+"to"      { return TO; }
+"into"    { return INTO; }
+"insert"  { return INSERT; }
 ":"       { return COLON; }
 ">"     { return GREATER_OP; }
 "<"     { return LESS_OP; }
@@ -31,6 +38,8 @@ digit [0-9]
 "<="    { return LESS_EQ_OP; }
 "("     { return OPEN; }
 ")"     { return CLOSE; }
+"{"     { return O_BRACE; }
+"}"     { return C_BRACE; }
 ","     { return COMMA; }
 ";"     { return SEMICOLON; }
 {alpha}({alpha}|{digit})* { yylval.strval = strdup(yytext); return WORD; }

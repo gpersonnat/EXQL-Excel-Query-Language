@@ -1,5 +1,8 @@
-parser:  lexer.l parser.y
+language:  lexer.l parser.y
 		bison -d parser.y
 		flex lexer.l
-		cc -o $@ parser.tab.c lex.yy.c language.c -ll
+		cc -c language.c
+		cc -o $@ parser.tab.c language.c lex.yy.c  -ll
 
+clean: 
+	rm language 
