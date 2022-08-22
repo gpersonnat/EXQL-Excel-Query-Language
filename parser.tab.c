@@ -1890,13 +1890,6 @@ int main(int argc, char **argv)
   mkdir(dirname,0777);
 
 
-
-  char directory_command[1000];
-
-  sprintf(directory_command, "mkdir %s", name);
-
-  // system(directory_command);
-
   set_workbook(name);
 
   char command[100];

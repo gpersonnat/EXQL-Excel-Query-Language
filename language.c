@@ -723,15 +723,21 @@ void insert(insert_query* query)
 
 
     char* header_row[MAX_COLUMN_CSV];
+
     
     int num_columns = split_line(buffer, header_row);
 
+      for (int i = 0; i < num_columns; i++)
+      {
+        printf("%s\n", header_row[i]);
+      }
 
     pair new_row[MAX_COLUMN_CSV];
 
     node_pair_to_array(query->pairs, new_row);
 
     sort(new_row, header_row, num_columns);
+
 
     char* row_string = create_row(new_row, num_columns);
 
@@ -741,12 +747,8 @@ void insert(insert_query* query)
 
     char command[50000];
     
-    printf("%s\n", workbook);
-
 
     sprintf(command, "python3 insert.py %s %s %s", sheet_name, workbook, row_string);
-
-    printf("%s\n", command);
 
     system(command);
 
