@@ -141,7 +141,7 @@ Limitation: CSV file needs to be cleaned by Python, causing columns to be insert
 ## Next Steps
 
 - Add better error messaging 
-- Handle edge cases (null values from excel files and non-cleaned data)
+- Handle edge cases (null values from excel files and uncleaned data)
 - Enable user to store select queries in variables 
 - Add DELETE operation 
 - Improve runtime performance of update queries 
