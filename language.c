@@ -737,7 +737,6 @@ char* create_row(pair pairs[], int num_columns)
     return strdup(row_string);
 }
 
-// update sheet types where Id = 6 set Name to "test"
 
 
 
@@ -823,7 +822,6 @@ void insert(insert_query* query)
 
     char buffer[MAX_CHARACTERS_CELL];
 
-    // insert {Id : 5, Name : "test"} into sheet types
 
     fgets(buffer, MAX_CHARACTERS_CELL, sheet_data);
 
