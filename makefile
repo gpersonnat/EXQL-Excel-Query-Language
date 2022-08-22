@@ -1,4 +1,4 @@
-language:  lexer.l parser.y
+exql:  lexer.l parser.y
 		bison -d parser.y
 		flex lexer.l
 		cc -c language.c
