@@ -24,6 +24,7 @@ typedef struct
     char* field;
     relation operator;
     value value;
+    valuetype type;
 }
 simple;
 
@@ -36,7 +37,7 @@ typedef struct predicate
 
     struct {
     struct predicate* predicate1;
-    relation operator;
+    operator operator;
     struct predicate* predicate2;
     } compound ;
 
@@ -128,5 +129,3 @@ void print_pair_list(node_pair* head);
 void insert(insert_query* query);
 
 void set_workbook(char* name);
-
-

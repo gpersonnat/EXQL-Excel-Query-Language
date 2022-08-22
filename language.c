@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include "language.h"
 #define MAX_CHARACTERS_CELL 32767
 #define MAX_COLUMN_CSV 16384
 
@@ -43,109 +44,6 @@ char* remove_quotes(char* string)
     }
     return strdup(copy_string);
 }
-
-
-typedef struct node 
-{
-    char* value;
-    struct node* next;
-
-} node;
-
-
-
-void print_list(node* head) 
-{
-    node* cursor = head;
-    while (cursor)
-    {
-        printf("%s\n", cursor->value);
-        cursor = cursor->next;
-    }
-}
-
-
-typedef enum { EQUALS, GREATER, LESS, GREATER_EQ, LESS_EQ } relation;
-
-typedef enum { AND, OR } operator;
-
-typedef enum { INT, STRING } valuetype;
-
-
-typedef struct 
-{
-    int ival;
-    char* sval;
-    valuetype type;
-} value;
-
-
-
-typedef struct 
-{
-    char* field;
-    relation operator;
-    value value;
-    valuetype type;
-}
-simple;
-
-typedef enum { SIMPLE, COMPOUND } predicate_type;
-
-typedef struct predicate
-{
-
-    simple simple_expr;
-
-    struct {
-    struct predicate* predicate1;
-    operator operator;
-    struct predicate* predicate2;
-    } compound ;
-
-    predicate_type type;
-
-    
-} predicate;
-
-
-typedef struct 
-{
-    char* sheetname;
-    predicate* expr;
-    bool select_all;
-    node* columns;
-
-} query;
-
-
-typedef struct 
-{
-    query* query;
-    value value;
-
-} update;
-
-typedef struct {
-    char* column;
-    value value;
-} pair;
-
-
-typedef struct node_pair
-{
-    pair value;
-    struct node_pair* next;
-} node_pair;
-
-
-typedef struct 
-{
-    node_pair* pairs;
-    char* sheetname;
-
-} insert_query;
-
 
 
 
